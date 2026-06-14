@@ -1,0 +1,1381 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduSphere Pro - School Management Information System</title>
+    <style>
+        /* --- MODERN CSS VARIABLES & ROOT DESIGN SYSTEM --- */
+        :root {
+            --bg-primary: #f4f6f9;
+            --bg-sidebar: #1e293b;
+            --bg-card: #ffffff;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --text-light: #f8fafc;
+            
+            /* Section Accents */
+            --color-primary-sec: #4f46e5; /* Indigo */
+            --color-nursery-sec: #f59e0b; /* Amber */
+            --color-success: #10b981;     /* Emerald */
+            --color-danger: #ef4444;      /* Rose */
+            --border-color: #e2e8f0;
+            
+            --transition-fast: 0.2s ease;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column; /* Changed to layout elements vertically below the top menu */
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- TOP MENU NAVIGATION BAR --- */
+        aside {
+            width: 100%; /* Spans full horizontal scale */
+            background-color: var(--bg-sidebar);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: row; /* Horizontal alignment layout */
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 2rem;
+            z-index: 10;
+            box-shadow: var(--shadow-md);
+        }
+
+        .brand {
+            padding: 0;
+            border-bottom: none;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand h2 {
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            color: #e2e8f0;
+        }
+
+        .brand span {
+            color: var(--color-nursery-sec);
+            font-size: 0.75rem;
+            display: block;
+            margin-top: 0.1rem;
+        }
+
+        .nav-links {
+            list-style: none;
+            margin-top: 0;
+            display: flex; /* Aligns menu items horizontally */
+            flex-direction: row;
+            gap: 0.5rem;
+        }
+
+        .nav-links li {
+            padding: 0;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 1rem;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            transition: var(--transition-fast);
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background-color: #334155;
+            color: var(--text-light);
+        }
+
+        .nav-btn.active {
+            border-left: none;
+            border-bottom: 3px solid var(--color-primary-sec); /* Adjusted active accent indicator to look clean horizontally */
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+        }
+
+        /* --- MAIN CONTENT CONTAINER --- */
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--bg-card);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-body {
+            padding: 2rem;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- UTILITY & GLOBAL UI COMPONENTS --- */
+        h3 {
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+            font-size: 1.4rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .btn-primary { background-color: var(--color-primary-sec); color: white; }
+        .btn-primary:hover { background-color: #3730a3; }
+        .btn-success { background-color: var(--color-success); color: white; }
+        .btn-success:hover { background-color: #065f46; }
+
+        /* --- DASHBOARD SECTION PANELS --- */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border-left: 5px solid var(--color-primary-sec);
+            position: relative;
+        }
+
+        .kpi-card.nursery { border-left-color: var(--color-nursery-sec); }
+        .kpi-card.success { border-left-color: var(--color-success); }
+        .kpi-card.danger { border-left-color: var(--color-danger); }
+
+        .kpi-card h4 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-card .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .kpi-card .sub-value {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .dashboard-split {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .panel-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Progress bars for enrollment */
+        .progress-group {
+            margin-bottom: 1rem;
+        }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+        .progress-bar-bg {
+            background-color: var(--border-color);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background-color: var(--color-primary-sec);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .progress-group.nursery-level .progress-bar-fill {
+            background-color: var(--color-nursery-sec);
+        }
+
+        /* --- FORM STRUCTURES & ACCORDIONS --- */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: #475569;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 0.65rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            background-color: #fff;
+            color: var(--text-main);
+            outline: none;
+            transition: var(--transition-fast);
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--color-primary-sec);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 1.5rem 0 0.75rem 0;
+            padding-bottom: 0.25rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        /* Interactive Ledger Invoice UI Component */
+        .fee-calculator-box {
+            background: #f8fafc;
+            border: 1px dashed var(--color-primary-sec);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .checkbox-item input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--color-primary-sec);
+        }
+
+        /* --- DATA TABLES --- */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 1rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+            background: var(--bg-card);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #475569;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: #f8fafc; }
+
+        .badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .badge-nursery { background-color: #fef3c7; color: #d97706; }
+        .badge-primary { background-color: #e0e7ff; color: #4f46e5; }
+        .badge-success { background-color: #d1fae5; color: #065f46; }
+        .badge-danger { background-color: #fee2e2; color: #b91c1c; }
+
+        /* Quick Action Grid Hooks */
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .action-card-btn {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 0.85rem;
+            text-align: left;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all var(--transition-fast);
+        }
+        .action-card-btn:hover {
+            border-color: var(--color-primary-sec);
+            background-color: #f0fdf4;
+        }
+
+        /* --- MARKS & ATTENDANCE INTERFACES --- */
+        .class-selector-bar {
+            background: var(--bg-card);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+            box-shadow: var(--shadow-sm);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP ROUTER NAVIGATION BAR -->
+    <aside>
+        <div class="brand">
+            <h2>EduSphere Pro</h2>
+            <span>SMIS Architecture Engine</span>
+        </div>
+        <ul class="nav-links">
+            <li><button class="nav-btn active" onclick="switchTab('dashboard')">Executive Dashboard</button></li>
+            <li><button class="nav-btn" onclick="switchTab('pupil-reg')">Pupil Registration</button></li>
+            <li><button class="nav-btn" onclick="switchTab('staff-reg')">Staff Management</button></li>
+            <li><button class="nav-btn" onclick="switchTab('finance')">Financial Ledger</button></li>
+            <li><button class="nav-btn" onclick="switchTab('attendance')">Live Attendance</button></li>
+            <li><button class="nav-btn" onclick="switchTab('grading')">Academic Grading</button></li>
+        </ul>
+        <div style="font-size: 0.75rem; color: #64748b; text-align: right;">
+            v4.2.1 Stable &bull; 2026 Engine
+        </div>
+    </aside>
+
+    <!-- MAIN WORKING CONTEXT -->
+    <main>
+        <header>
+            <div class="header-title">
+                <h1 id="current-tab-title" style="font-size: 1.5rem; color: #0f172a;">Executive Dashboard</h1>
+            </div>
+            <div class="user-profile" style="font-weight: 500; font-size: 0.9rem;">
+                Role: <span class="badge badge-primary">Super Administrator</span>
+            </div>
+        </header>
+
+        <div class="app-body">
+
+            <!-- 1. EXECUTIVE DASHBOARD -->
+            <section id="dashboard" class="tab-content active">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <h4>Total Active Pupils</h4>
+                        <div class="value" id="kpi-total-pupils">0</div>
+                        <div class="sub-value" id="kpi-pupil-breakdown">Nursery: 0 | Primary: 0</div>
+                    </div>
+                    <div class="kpi-card nursery">
+                        <h4>Total Academic Staff</h4>
+                        <div class="value" id="kpi-total-staff">0</div>
+                        <div class="sub-value">Allocated and Vetted Units</div>
+                    </div>
+                    <div class="kpi-card success">
+                        <h4>Collected Revenue</h4>
+                        <div class="value" id="kpi-total-collected">UGX 0</div>
+                        <div class="sub-value">Direct Operational Liquidity</div>
+                    </div>
+                    <div class="kpi-card danger">
+                        <h4>Outstanding Arrears</h4>
+                        <div class="value" id="kpi-total-arrears">UGX 0</div>
+                        <div class="sub-value">Defaulter Ledger Balance</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-split">
+                    <div class="panel-card">
+                        <h4 style="margin-bottom: 1rem;">Real-time System Enrollment Demographics</h4>
+                        <div id="demographics-container">
+                            <!-- Injected Dynamic Progress Bars for Enrollment -->
+                        </div>
+                    </div>
+                    <div class="panel-card">
+                        <h4 style="margin-bottom: 1rem;">Administrative Speed Dials</h4>
+                        <div class="quick-actions">
+                            <button class="action-card-btn" onclick="switchTab('pupil-reg')">&rarr; Onboard New Student Enrollment</button>
+                            <button class="action-card-btn" onclick="switchTab('staff-reg')">&rarr; Register Contracted Institution Staff</button>
+                            <button class="action-card-btn" onclick="switchTab('finance')">&rarr; Audit Accounts & Open Expenses</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- 2. COMPREHENSIVE PUPIL REGISTRATION & FINANCIAL INTEGRATION -->
+            <section id="pupil-reg" class="tab-content">
+                <div class="panel-card">
+                    <h3>Comprehensive Pupil Intake Enrollment Terminal</h3>
+                    <form id="pupilForm" onsubmit="processPupilRegistration(event)">
+                        
+                        <div class="form-section-title">A. Demographic & Identity Index</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Full Legal Name *</label>
+                                <input type="text" id="p-name" required placeholder="Surname First, Middle, Last">
+                            </div>
+                            <div class="form-group">
+                                <label>Date of Birth *</label>
+                                <input type="date" id="p-dob" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Gender *</label>
+                                <select id="p-gender" required>
+                                    <option value="">-- Choose Element --</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Photo Specification Placeholder</label>
+                                <input type="file" id="p-photo" accept="image/*">
+                            </div>
+                        </div>
+
+                        <div class="form-section-title">B. Academic Routing Matrix</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>School Framework Domain *</label>
+                                <select id="p-section" required onchange="populateClassesBySection()">
+                                    <option value="">-- Choose Framework --</option>
+                                    <option value="Nursery">Nursery Division</option>
+                                    <option value="Primary">Primary Division</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Class Structure Assignment *</label>
+                                <select id="p-class" required>
+                                    <option value="">-- Choose Section First --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Assigned Stream *</label>
+                                <select id="p-stream" required>
+                                    <option value="Stream A">Stream A</option>
+                                    <option value="Stream B">Stream B</option>
+                                    <option value="Stream C">Stream C</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Entry Variable Status *</label>
+                                <select id="p-entry" required>
+                                    <option value="Continuing">Continuing Student</option>
+                                    <option value="New">New Intake Transfer</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Residence Boarding Paradigm *</label>
+                                <select id="p-residence" required onchange="evaluateDynamicInvoice()">
+                                    <option value="Day">Day Scholar Infrastructure</option>
+                                    <option value="Boarding">Boarding/Residency Infrastructure</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Previous Educational Institution Attended</label>
+                                <input type="text" id="p-prev-school" placeholder="N/A if entry level">
+                            </div>
+                        </div>
+
+                        <div class="form-section-title">C. Medical Status Logs</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Immunization History Overview</label>
+                                <input type="text" id="p-immunization" placeholder="e.g., BCG, DPT Complete">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Critical Special Educational Needs (SEN) / Severe Allergies</label>
+                                <textarea id="p-medical" rows="2" placeholder="Specify explicit emergency parameters if any..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-section-title">D. Kinship & Next of Kin (Guardian Registry)</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Primary Legal Guardian Full Name *</label>
+                                <input type="text" id="p-parent-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Primary Contact Phone Line *</label>
+                                <input type="tel" id="p-parent-phone" required placeholder="e.g., +256...">
+                            </div>
+                            <div class="form-group">
+                                <label>Alternative Emergency Contact Line</label>
+                                <input type="tel" id="p-parent-alt" placeholder="e.g., +256...">
+                            </div>
+                            <div class="form-group">
+                                <label>Active Email Communication Address</label>
+                                <input type="email" id="p-parent-email" placeholder="communications@domain.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Professional Occupation Record</label>
+                                <input type="text" id="p-parent-job" placeholder="Corporate/Private/Public">
+                            </div>
+                            <div class="form-group">
+                                <label>National Identification Registry Number (NIN / National ID) *</label>
+                                <input type="text" id="p-parent-nin" required placeholder="CM... or CW...">
+                            </div>
+                        </div>
+
+                        <div class="form-section-title">E. Synchronized Real-Time Invoice Billing Engine</div>
+                        <div class="fee-calculator-box">
+                            <p style="font-weight: 600; font-size:0.95rem; margin-bottom:1rem; color: var(--color-primary-sec);">
+                                Dynamic Structural Variable Cost Calculation Matrix
+                            </p>
+                            
+                            <div class="checkbox-grid">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="add-uniform" value="120000" onchange="evaluateDynamicInvoice()"> Standard Dress Uniform Pack (120k)
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="add-sweater" value="45000" onchange="evaluateDynamicInvoice()"> Institutional Branded Sweater (45k)
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="add-report" value="15000" onchange="evaluateDynamicInvoice()"> Termly Continuous Assessment Booklet (15k)
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="add-dev" value="100000" onchange="evaluateDynamicInvoice()"> Infrastructural Capital Development Fee (100k)
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="add-med" value="30000" onchange="evaluateDynamicInvoice()"> On-site Clinical Triage & Insurance Fee (30k)
+                                </label>
+                            </div>
+
+                            <div class="form-grid" style="margin-bottom:0;">
+                                <div class="form-group">
+                                    <label>Automated Base Tuition Invoice</label>
+                                    <input type="text" id="f-base" readonly style="background:#e2e8f0; font-weight:700;">
+                                </div>
+                                <div class="form-group">
+                                    <label>Aggregated Cumulative Invoice Gross</label>
+                                    <input type="text" id="f-total-invoice" readonly style="background:#cbd5e1; font-weight:700;">
+                                </div>
+                                <div class="form-group">
+                                    <label>Real-time Disbursed Capital Payment (UGX) *</label>
+                                    <input type="number" id="f-paid" required min="0" value="0" oninput="evaluateDynamicInvoice()">
+                                </div>
+                                <div class="form-group">
+                                    <label>Outstanding Balance Arrear Due</label>
+                                    <input type="text" id="f-balance" readonly style="background:#fee2e2; color:#b91c1c; font-weight:700;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:1.5rem; text-align:right;">
+                            <button type="submit" class="btn btn-success">Execute Pupil Ledger Registration & Committal</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+
+            <!-- 3. COMPREHENSIVE STAFF REGISTRATION -->
+            <section id="staff-reg" class="tab-content">
+                <div class="panel-card">
+                    <h3>Human Resource & Academic Staff Onboarding Terminal</h3>
+                    <form id="staffForm" onsubmit="processStaffRegistration(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Full Legal Designation Name *</label>
+                                <input type="text" id="s-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Date of Birth *</label>
+                                <input type="date" id="s-dob" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Gender *</label>
+                                <select id="s-gender" required>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>National Registry ID Card (NIN) *</label>
+                                <input type="text" id="s-nin" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Secure Phone Line *</label>
+                                <input type="tel" id="s-phone" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Corporate/Personal Email Address *</label>
+                                <input type="email" id="s-email" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Residential Physical Address *</label>
+                                <input type="text" id="s-address" required>
+                            </div>
+                        </div>
+
+                        <div class="form-section-title">Institutional Parameters & Compensatory Framework</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Highest Verified Academic Qualification *</label>
+                                <input type="text" id="s-qualification" required placeholder="B.Ed, Dip. Early Childhood, etc.">
+                            </div>
+                            <div class="form-group">
+                                <label>Institutional Role / Designation Unit *</label>
+                                <select id="s-role" required>
+                                    <option value="Teacher">Academic Classroom Instructor</option>
+                                    <option value="Administrator">Functional Administrative Exec</option>
+                                    <option value="Support Staff">Operations & Support Infrastructure</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Core Specialization Subjects / Assigned Class Frameworks</label>
+                                <input type="text" id="s-subjects" placeholder="e.g., Mathematics P1-P4, Literacy">
+                            </div>
+                            <div class="form-group">
+                                <label>Official Date of Appointment *</label>
+                                <input type="date" id="s-appoint-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Gross Base Remuneration Salary Scale (UGX / Month) *</label>
+                                <input type="number" id="s-salary" required min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Disbursement Bank Name & Branch *</label>
+                                <input type="text" id="s-bank" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Disbursement Financial Bank Account Number *</label>
+                                <input type="text" id="s-bank-acc" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Next of Kin Legal Name & Direct Phone Line *</label>
+                                <input type="text" id="s-kin" required>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:1.5rem; text-align:right;">
+                            <button type="submit" class="btn btn-primary">Commit Corporate Staff Onboarding Record</button>
+                        </div>
+                    </form>
+
+                    <h3 style="margin-top: 3rem; margin-bottom:1rem;">Active Onboarded Institution Human Resource Roster</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Legal Representative Name</th>
+                                    <th>Assigned Role</th>
+                                    <th>Subject Domain Matrix</th>
+                                    <th>Contact Parameter</th>
+                                    <th>Salary Remuneration</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staffTableBody">
+                                <!-- Dynamic JS Injections -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- 4. ACCOUNTING LEDGER & DYNAMIC FINANCE ENGINE -->
+            <section id="finance" class="tab-content">
+                <div class="panel-card" style="margin-bottom: 2rem;">
+                    <h3>Real-time School Financial Status Board</h3>
+                    <div class="kpi-grid" style="margin-bottom: 0;">
+                        <div class="kpi-card">
+                            <h4>Gross Invoiced Tuition Pipeline</h4>
+                            <div class="value" id="fin-gross-revenue">UGX 0</div>
+                        </div>
+                        <div class="kpi-card success">
+                            <h4>Realized Capital Liquidity Receipts</h4>
+                            <div class="value" id="fin-gross-collected">UGX 0</div>
+                        </div>
+                        <div class="kpi-card danger">
+                            <h4>Outstanding Accounts Receivable Balance</h4>
+                            <div class="value" id="fin-gross-arrears">UGX 0</div>
+                        </div>
+                        <div class="kpi-card danger" style="border-left-color: #7c2d12;">
+                            <h4>Aggregated Expenditure Outlays</h4>
+                            <div class="value" id="fin-gross-expenses">UGX 0</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1.5rem; font-weight: 700; font-size: 1.1rem; padding: 1rem; background: #f0fdf4; border-radius: var(--radius-md);" id="fin-net-profit">
+                        Net Structural Institutional Surplus: UGX 0
+                    </div>
+                </div>
+
+                <div class="dashboard-split">
+                    <div class="panel-card">
+                        <h3>Comprehensive Pupil Financial Transaction Ledger Tracking</h3>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Registered Pupil Entity</th>
+                                        <th>Assigned Class Level</th>
+                                        <th>Gross Invoice Amount</th>
+                                        <th>Realized Receipt Paid</th>
+                                        <th>Deficit Outstanding Arrears</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentFinanceTableBody">
+                                    <!-- Dynamic Injections -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="panel-card">
+                        <h3>Operational Overhead Expense Logger</h3>
+                        <form id="expenseForm" onsubmit="processExpenseLogging(event)" style="margin-bottom:1.5rem;">
+                            <div class="form-group" style="margin-bottom: 0.75rem;">
+                                <label>Expense Descriptive Name *</label>
+                                <input type="text" id="e-name" required placeholder="e.g., Generator Fuel, Chalk Stock">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0.75rem;">
+                                <label>Overhead Allocation Category *</label>
+                                <select id="e-category" required>
+                                    <option value="Utilities">Utilities & Infrastructure</option>
+                                    <option value="Scholastic Materials">Scholastic Materials Logistics</option>
+                                    <option value="Food & Provisions">Food & Provisions Stock</option>
+                                    <option value="Maintenance">Institutional Campus Maintenance</option>
+                                    <option value="Other">Miscellaneous Operational Expenditures</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label>Disbursed Monetary Capital Amount (UGX) *</label>
+                                <input type="number" id="e-amount" required min="1">
+                            </div>
+                            <button type="submit" class="btn btn-danger" style="width:100%;">Log Operational Expense Record</button>
+                        </form>
+
+                        <h4>Historic Internal Expenditure Logs</h4>
+                        <div class="table-responsive" style="max-height: 200px;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Amount Allocation</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="expenseTableBody">
+                                    <!-- Dynamic Injections -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- 5. STRUCTURAL LIVE DAILY ATTENDANCE REGISTRY -->
+            <section id="attendance" class="tab-content">
+                <div class="panel-card">
+                    <h3>Daily Roll Call Attendance Processing Matrix</h3>
+                    <div class="class-selector-bar">
+                        <div class="form-group" style="width: 250px; margin-bottom:0;">
+                            <label>Filter Structure Class Target</label>
+                            <select id="attendance-class-select" onchange="renderAttendanceClassSheet()">
+                                <option value="Baby Class">Baby Class (Nursery)</option>
+                                <option value="Middle Class">Middle Class (Nursery)</option>
+                                <option value="Top Class">Top Class (Nursery)</option>
+                                <option value="P.1">P.1 (Primary)</option>
+                                <option value="P.2">P.2 (Primary)</option>
+                                <option value="P.3">P.3 (Primary)</option>
+                                <option value="P.4">P.4 (Primary)</option>
+                                <option value="P.5">P.5 (Primary)</option>
+                                <option value="P.6">P.6 (Primary)</option>
+                                <option value="P.7">P.7 (Primary)</option>
+                            </select>
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">
+                            Active Session Date Stamp: <strong style="color:#000;">June 3, 2026</strong>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Student Entity Identifier</th>
+                                    <th>Assigned Tracking Stream</th>
+                                    <th>Attendance Operational Status Metric Selection</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceTableBody">
+                                <!-- Dynamic Class Roll Injection -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top:1.5rem; text-align:right;">
+                        <button type="button" class="btn btn-primary" onclick="alert('Attendance Matrix committed securely to centralized institution database.')">Save Daily Attendance Log State</button>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- 6. ACADEMIC MARKS & GRADING REPORT CARD ARCHITECTURE -->
+            <section id="grading" class="tab-content">
+                <div class="panel-card">
+                    <h3>Termly Examination Assessment Terminal</h3>
+                    <div class="class-selector-bar">
+                        <div class="form-group" style="width:200px; margin-bottom:0;">
+                            <label>Class Target Matrix</label>
+                            <select id="grading-class-select" onchange="renderGradingClassSheet()">
+                                <option value="P.1">P.1 (Primary)</option>
+                                <option value="P.2">P.2 (Primary)</option>
+                                <option value="P.3">P.3 (Primary)</option>
+                                <option value="P.4">P.4 (Primary)</option>
+                                <option value="P.5">P.5 (Primary)</option>
+                                <option value="P.6">P.6 (Primary)</option>
+                                <option value="P.7">P.7 (Primary)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="width:200px; margin-bottom:0;">
+                            <label>Examinable Curricular Discipline</label>
+                            <select id="grading-subject-select">
+                                <option value="Mathematics">Mathematics</option>
+                                <option value="English Language">English Language</option>
+                                <option value="Basic Science">Basic Science</option>
+                                <option value="Social Studies">Social Studies</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Enrolled Legal Pupil Name</th>
+                                    <th>Raw Score Raw Input (0 - 100)</th>
+                                    <th>Dynamic Computed Grade Assessment Alpha</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gradingTableBody">
+                                <!-- Dynamic Assessment Sheet Rows Injection -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- --- CORE VANILLA JAVASCRIPT ARCHITECTURE ENGINE --- -->
+    <script>
+        // CENTRAL MEMORY RECORD ENTITY STORE (STATE ENGINE)
+        const STATE = {
+            pupils: [],
+            staff: [],
+            expenses: []
+        };
+
+        // STRUCTURAL FEE ARCHITECTURE CONFIGURATION
+        const FEE_STRUCTURE = {
+            Nursery: { Day: 450000, Boarding: 950000 },
+            Primary: { Day: 600000, Boarding: 1250000 }
+        };
+
+        // INSTITUTIONAL ACADEMIC STRUCTURAL CONFIGURATION DATA Matrix
+        const CLASS_LOOKUP = {
+            Nursery: ["Baby Class", "Middle Class", "Top Class"],
+            Primary: ["P.1", "P.2", "P.3", "P.4", "P.5", "P.6", "P.7"]
+        };
+
+        // INITIAL DEED MOCK POPULATION INJECTIONS FOR GRAPHICAL REALISM ON FIRST LOAD
+        function injectMockCoreData() {
+            STATE.pupils = [
+                { name: "Ssekandi Marvin", dob: "2019-04-12", gender: "Male", section: "Nursery", level: "Top Class", stream: "Stream A", residence: "Day", invoice: 495000, paid: 400000, balance: 95000 },
+                { name: "Namubiru Patricia", dob: "2015-08-22", gender: "Female", section: "Primary", level: "P.5", stream: "Stream B", residence: "Boarding", invoice: 1395000, paid: 1395000, balance: 0 },
+                { name: "Ochen Gabriel", dob: "2017-01-05", gender: "Male", section: "Primary", level: "P.3", stream: "Stream A", residence: "Day", invoice: 600000, paid: 300000, balance: 300000 }
+            ];
+
+            STATE.staff = [
+                { name: "Nalwoga Proscovia", role: "Teacher", subjects: "Literacy & Numbers (Top Class)", phone: "+256701234567", salary: 750000 },
+                { name: "Okello John Bosco", role: "Teacher", subjects: "Mathematics P.5 - P.7", phone: "+256772987654", salary: 1200000 }
+            ];
+
+            STATE.expenses = [
+                { name: "Scholastic Primary Progress Exam Printing", category: "Scholastic Materials", amount: 350000 },
+                { name: "Campus Standby Generator Diesel Fuel", category: "Utilities", amount: 180000 }
+            ];
+
+            recalculateWholeSystemState();
+        }
+
+        // TAB CONFIGURATION ARCHITECTURE (SINGLE PAGE ROUTER INTERACTION EFFECT)
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(element => element.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(element => element.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            
+            // Format contextual visual cues in header
+            const eventButton = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+            if(eventButton) eventButton.classList.add('active');
+            
+            document.getElementById('current-tab-title').innerText = eventButton ? eventButton.innerText : "System Core Terminal";
+            
+            // Contextual initialization hooks
+            if(tabId === 'attendance') renderAttendanceClassSheet();
+            if(tabId === 'grading') renderGradingClassSheet();
+        }
+
+        // INTERACTIVE DYNAMIC MATRIX ELEMENT FILLERS (CLASS DROPDOWN VARIATIONS)
+        function populateClassesBySection() {
+            const sectionSelected = document.getElementById('p-section').value;
+            const classSelectDOM = document.getElementById('p-class');
+            
+            classSelectDOM.innerHTML = '';
+            
+            if (!sectionSelected) {
+                classSelectDOM.innerHTML = '<option value="">-- Choose Section First --</option>';
+                return;
+            }
+
+            CLASS_LOOKUP[sectionSelected].forEach(classLevel => {
+                const opt = document.createElement('option');
+                opt.value = classLevel;
+                opt.innerText = classLevel;
+                classSelectDOM.appendChild(opt);
+            });
+
+            evaluateDynamicInvoice();
+        }
+
+        // INTERACTIVE REAL-TIME FINANCIAL LEDGER VARIABLE EVALUATOR
+        function evaluateDynamicInvoice() {
+            const section = document.getElementById('p-section').value;
+            const residence = document.getElementById('p-residence').value;
+            
+            if (!section || !residence) {
+                document.getElementById('f-base').value = 0;
+                document.getElementById('f-total-invoice').value = 0;
+                document.getElementById('f-balance').value = 0;
+                return;
+            }
+
+            // Extract values derived from static configuration engine matrix
+            const baseTuition = FEE_STRUCTURE[section][residence];
+            document.getElementById('f-base').value = `UGX ${baseTuition.toLocaleString()}`;
+
+            // Aggregate dynamic secondary structural checkbox outlays
+            let addOnsGross = 0;
+            const addOnIDs = ['add-uniform', 'add-sweater', 'add-report', 'add-dev', 'add-med'];
+            addOnIDs.forEach(id => {
+                const cb = document.getElementById(id);
+                if (cb && cb.checked) {
+                    addOnsGross += parseInt(cb.value);
+                }
+            });
+
+            const totalInvoiceGross = baseTuition + addOnsGross;
+            document.getElementById('f-total-invoice').value = totalInvoiceGross; // Store literal integer for downstream compute evaluation
+
+            const totalPaidAmount = parseInt(document.getElementById('f-paid').value) || 0;
+            const absoluteDeficitOutstanding = totalInvoiceGross - totalPaidAmount;
+
+            // Render numeric changes visibly formatted
+            document.getElementById('f-total-invoice').value = `UGX ${totalInvoiceGross.toLocaleString()}`;
+            document.getElementById('f-balance').value = `UGX ${absoluteDeficitOutstanding.toLocaleString()}`;
+            
+            // Direct structural color feedback loops based on metrics status
+            if (absoluteDeficitOutstanding > 0) {
+                document.getElementById('f-balance').style.backgroundColor = '#fee2e2';
+                document.getElementById('f-balance').style.color = '#b91c1c';
+            } else {
+                document.getElementById('f-balance').style.backgroundColor = '#d1fae5';
+                document.getElementById('f-balance').style.color = '#065f46';
+            }
+        }
+
+        // STATE SYNCHRONIZATION AND METRIC REDUCER ENGINE
+        function recalculateWholeSystemState() {
+            // A. Compute KPI Metrics via Array Reducers
+            const countTotalPupils = STATE.pupils.length;
+            const countNursery = STATE.pupils.filter(p => p.section === 'Nursery').length;
+            const countPrimary = STATE.pupils.filter(p => p.section === 'Primary').length;
+            const countStaff = STATE.staff.length;
+
+            let expectedRevenueGross = 0;
+            let realizedRevenueCollected = 0;
+            let outstandingArrearsDeficit = 0;
+
+            STATE.pupils.forEach(p => {
+                expectedRevenueGross += p.invoice;
+                realizedRevenueCollected += p.paid;
+                outstandingArrearsDeficit += p.balance;
+            });
+
+            let combinedExpensesOutlay = 0;
+            STATE.expenses.forEach(e => combinedExpensesOutlay += e.amount);
+
+            const systemicNetSurplusProfit = realizedRevenueCollected - combinedExpensesOutlay;
+
+            // B. Direct UI Injection DOM bindings
+            document.getElementById('kpi-total-pupils').innerText = countTotalPupils;
+            document.getElementById('kpi-pupil-breakdown').innerText = `Nursery: ${countNursery} | Primary: ${countPrimary}`;
+            document.getElementById('kpi-total-staff').innerText = countStaff;
+            document.getElementById('kpi-total-collected').innerText = `UGX ${realizedRevenueCollected.toLocaleString()}`;
+            document.getElementById('kpi-total-arrears').innerText = `UGX ${outstandingArrearsDeficit.toLocaleString()}`;
+
+            // C. Synchronize Accountant Ledger Dashboard Metrics Panel Card Component Viewports
+            document.getElementById('fin-gross-revenue').innerText = `UGX ${expectedRevenueGross.toLocaleString()}`;
+            document.getElementById('fin-gross-collected').innerText = `UGX ${realizedRevenueCollected.toLocaleString()}`;
+            document.getElementById('fin-gross-arrears').innerText = `UGX ${outstandingArrearsDeficit.toLocaleString()}`;
+            document.getElementById('fin-gross-expenses').innerText = `UGX ${combinedExpensesOutlay.toLocaleString()}`;
+            
+            const netProfitDOM = document.getElementById('fin-net-profit');
+            netProfitDOM.innerText = `Net Structural Institutional Surplus: UGX ${systemicNetSurplusProfit.toLocaleString()}`;
+            if(systemicNetSurplusProfit >= 0) {
+                netProfitDOM.style.backgroundColor = "#f0fdf4"; netProfitDOM.style.color = "#166534";
+            } else {
+                netProfitDOM.style.backgroundColor = "#fef2f2"; netProfitDOM.style.color = "#991b1b";
+            }
+
+            // D. Populate and Render Structural Data Log Tables Dynamic Arrays Loop Rows
+            renderFinancialTablesAndLogs();
+            renderDemographicsBars();
+        }
+
+        // LEDGER DATA AND METRIC LOG RENDER ENGINE CONTEXTS
+        function renderFinancialTablesAndLogs() {
+            // Student Finance Audit Ledger View Injection
+            const studentFinBody = document.getElementById('studentFinanceTableBody');
+            studentFinBody.innerHTML = '';
+            STATE.pupils.forEach(p => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${p.name}</strong></td>
+                    <td><span class="badge ${p.section === 'Nursery' ? 'badge-nursery' : 'badge-primary'}">${p.level}</span></td>
+                    <td>UGX ${p.invoice.toLocaleString()}</td>
+                    <td style="color:var(--color-success); font-weight:600;">UGX ${p.paid.toLocaleString()}</td>
+                    <td style="color:${p.balance > 0 ? 'var(--color-danger)' : 'var(--color-success)'}; font-weight:600;">UGX ${p.balance.toLocaleString()}</td>
+                `;
+                studentFinBody.appendChild(row);
+            });
+
+            // Corporate Expense Log System View Injection
+            const expenseBody = document.getElementById('expenseTableBody');
+            expenseBody.innerHTML = '';
+            STATE.expenses.forEach(e => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${e.name} <br><small style="color:var(--text-muted);">${e.category}</small></td>
+                    <td style="color:var(--color-danger); font-weight:600;">UGX ${e.amount.toLocaleString()}</td>
+                `;
+                expenseBody.appendChild(row);
+            });
+
+            // Staff Verification Record Roster Table View Injection
+            const staffBody = document.getElementById('staffTableBody');
+            staffBody.innerHTML = '';
+            STATE.staff.forEach(s => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${s.name}</strong></td>
+                    <td><span class="badge badge-primary">${s.role}</span></td>
+                    <td>${s.subjects || 'System Administration Operational Assignment'}</td>
+                    <td>${s.phone}</td>
+                    <td style="font-weight:600;">UGX ${s.salary.toLocaleString()}</td>
+                `;
+                staffBody.appendChild(row);
+            });
+        }
+
+        // RENDER INTERACTIVE ENROLLMENT METRIC DEMOGRAPHICS PROGRESS BAR COMPONENTS
+        function renderDemographicsBars() {
+            const container = document.getElementById('demographics-container');
+            container.innerHTML = '';
+
+            const combinedAllClassesArray = [...CLASS_LOOKUP.Nursery, ...CLASS_LOOKUP.Primary];
+            const sampleMaxBaselineScaling = 10; // Normalized ceiling reference for progress UI rendering component representation
+
+            combinedAllClassesArray.forEach(classLevel => {
+                const matchingCount = STATE.pupils.filter(p => p.level === classLevel).length;
+                const evaluatedPercentageWidth = Math.min((matchingCount / sampleMaxBaselineScaling) * 100, 100);
+                const isNurseryLevelElement = CLASS_LOOKUP.Nursery.includes(classLevel);
+
+                const blockGroup = document.createElement('div');
+                blockGroup.className = `progress-group ${isNurseryLevelElement ? 'nursery-level' : ''}`;
+                blockGroup.innerHTML = `
+                    <div class="progress-label">
+                        <span>${classLevel}</span>
+                        <strong>${matchingCount} Pupils registered</strong>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: ${evaluatedPercentageWidth || 3}%;"></div>
+                    </div>
+                `;
+                container.appendChild(blockGroup);
+            });
+        }
+
+        // POST AND PROCESS REGISTRATION TRANSACTION ACTIONS (EVENT HANDLERS)
+        function processPupilRegistration(event) {
+            event.preventDefault();
+
+            // Extract exact raw components dynamically out of DOM form state variables
+            const section = document.getElementById('p-section').value;
+            const residence = document.getElementById('p-residence').value;
+            const baseTuition = FEE_STRUCTURE[section][residence];
+
+            let addOnsGross = 0;
+            const addOnIDs = ['add-uniform', 'add-sweater', 'add-report', 'add-dev', 'add-med'];
+            addOnIDs.forEach(id => {
+                const cb = document.getElementById(id);
+                if (cb && cb.checked) addOnsGross += parseInt(cb.value);
+            });
+
+            const calculatedGrossInvoicedAmount = baseTuition + addOnsGross;
+            const inputRealizedDisbursedDeposit = parseInt(document.getElementById('f-paid').value) || 0;
+            const outstandingComputedDeficitArrears = calculatedGrossInvoicedAmount - inputRealizedDisbursedDeposit;
+
+            const newPupilEntity = {
+                name: document.getElementById('p-name').value,
+                dob: document.getElementById('p-dob').value,
+                gender: document.getElementById('p-gender').value,
+                section: section,
+                level: document.getElementById('p-class').value,
+                stream: document.getElementById('p-stream').value,
+                residence: residence,
+                invoice: calculatedGrossInvoicedAmount,
+                paid: inputRealizedDisbursedDeposit,
+                balance: outstandingComputedDeficitArrears
+            };
+
+            // Push into main system core database storage array memory reference
+            STATE.pupils.push(newPupilEntity);
+
+            // Reset Form Fields state and recalculate dashboard downstream pipeline impacts
+            document.getElementById('pupilForm').reset();
+            document.getElementById('p-class').innerHTML = '<option value="">-- Choose Section First --</option>';
+            
+            recalculateWholeSystemState();
+            alert(`Database Entry Complete: ${newPupilEntity.name} has been enrolled successfully into the system.`);
+            switchTab('dashboard');
+        }
+
+        function processStaffRegistration(event) {
+            event.preventDefault();
+
+            const newStaffEntity = {
+                name: document.getElementById('s-name').value,
+                role: document.getElementById('s-role').value,
+                subjects: document.getElementById('s-subjects').value,
+                phone: document.getElementById('s-phone').value,
+                salary: parseInt(document.getElementById('s-salary').value) || 0
+            };
+
+            STATE.staff.push(newStaffEntity);
+            document.getElementById('staffForm').reset();
+            
+            recalculateWholeSystemState();
+            alert(`HR Database Entry Complete: Contracted staff file initialized for ${newStaffEntity.name}.`);
+        }
+
+        function processExpenseLogging(event) {
+            event.preventDefault();
+
+            const newExpenseLogItem = {
+                name: document.getElementById('e-name').value,
+                category: document.getElementById('e-category').value,
+                amount: parseInt(document.getElementById('e-amount').value) || 0
+            };
+
+            STATE.expenses.push(newExpenseLogItem);
+            document.getElementById('expenseForm').reset();
+
+            recalculateWholeSystemState();
+        }
+
+        // ATTENDANCE SUBSYSTEM REGISTER MATRIX COMPONENT BUILDER
+        function renderAttendanceClassSheet() {
+            const targetedClassSelected = document.getElementById('attendance-class-select').value;
+            const targetTableBodyDOM = document.getElementById('attendanceTableBody');
+            
+            targetTableBodyDOM.innerHTML = '';
+
+            const filteredClassPupils = STATE.pupils.filter(p => p.level === targetedClassSelected);
+
+            if (filteredClassPupils.length === 0) {
+                targetTableBodyDOM.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">No students currently registered in ${targetedClassSelected} via master student data framework roster pool.</td></tr>`;
+                return;
+            }
+
+            filteredClassPupils.forEach((pupil, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${pupil.name}</strong></td>
+                    <td><span class="badge badge-primary">${pupil.stream}</span></td>
+                    <td>
+                        <label style="margin-right:1rem; font-size:0.85rem; font-weight:600; color:var(--color-success);">
+                            <input type="radio" name="att-status-${index}" value="Present" checked> Present
+                        </label>
+                        <label style="margin-right:1rem; font-size:0.85rem; font-weight:600; color:var(--color-danger);">
+                            <input type="radio" name="att-status-${index}" value="Absent"> Absent
+                        </label>
+                        <label style="font-size:0.85rem; font-weight:600; color:var(--text-muted);">
+                            <input type="radio" name="att-status-${index}" value="Excused"> Excused
+                        </label>
+                    </td>
+                `;
+                targetTableBodyDOM.appendChild(row);
+            });
+        }
+
+        // ACADEMIC ASSESSMENT GRADING DATA ENTRY MODULE ARCHITECTURE SHEET BUILDER
+        function renderGradingClassSheet() {
+            const selectedClass = document.getElementById('grading-class-select').value;
+            const targetTableBodyDOM = document.getElementById('gradingTableBody');
+
+            targetTableBodyDOM.innerHTML = '';
+
+            const filteredClassPupils = STATE.pupils.filter(p => p.level === selectedClass);
+
+            if (filteredClassPupils.length === 0) {
+                targetTableBodyDOM.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">No students currently registered in ${selectedClass} within database system state pool.</td></tr>`;
+                return;
+            }
+
+            filteredClassPupils.forEach((pupil, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${pupil.name}</strong></td>
+                    <td>
+                        <input type="number" min="0" max="100" placeholder="Score Input" 
+                               id="score-input-${index}" 
+                               style="width:100px; padding:0.4rem; border:1px solid var(--border-color); border-radius:var(--radius-md);"
+                               oninput="calculateDynamicGradeAlphaElement(${index})">
+                    </td>
+                    <td><span id="grade-badge-output-${index}" class="badge" style="background:#e2e8f0; color:var(--text-main);">Unassigned Score</span></td>
+                `;
+                targetTableBodyDOM.appendChild(row);
+            });
+        }
+
+        // DYNAMIC SCORE CALCULATOR EVALUATOR SYSTEM scale BASELINE RULE ENGINE
+        function calculateDynamicGradeAlphaElement(indexSelectorKey) {
+            const scoreInputValueRaw = document.getElementById(`score-input-${indexSelectorKey}`).value;
+            const targetBadgeOutputDOM = document.getElementById(`grade-badge-output-${indexSelectorKey}`);
+            
+            if (scoreInputValueRaw === '') {
+                targetBadgeOutputDOM.innerText = "Unassigned Score";
+                targetBadgeOutputDOM.className = "badge";
+                targetBadgeOutputDOM.style.backgroundColor = "#e2e8f0";
+                targetBadgeOutputDOM.style.color = "var(--text-main)";
+                return;
+            }
+
+            const numericScore = parseInt(scoreInputValueRaw);
+            let evaluationAlphaGradeString = "F";
+            let cssStyleClassBadgeType = "badge-danger";
+
+            // Standard Ugandan Primary Grading Scale Parameter Implementations (D1 to F9 equivalents mapped onto alpha arrays)
+            if (numericScore >= 90) { evaluationAlphaGradeString = "D1 [Excellent]"; cssStyleClassBadgeType = "badge-success"; }
+            else if (numericScore >= 80) { evaluationAlphaGradeString = "D2 [Very Good]"; cssStyleClassBadgeType = "badge-success"; }
+            else if (numericScore >= 70) { evaluationAlphaGradeString = "C3 [Good]"; cssStyleClassBadgeType = "badge-primary"; }
+            else if (numericScore >= 60) { evaluationAlphaGradeString = "C4 [Credit]"; cssStyleClassBadgeType = "badge-primary"; }
+            else if (numericScore >= 50) { evaluationAlphaGradeString = "C5 [Credit]"; cssStyleClassBadgeType = "badge-nursery"; }
+            else if (numericScore >= 45) { evaluationAlphaGradeString = "C6 [Credit]"; cssStyleClassBadgeType = "badge-nursery"; }
+            else if (numericScore >= 40) { evaluationAlphaGradeString = "P7 [Pass]"; cssStyleClassBadgeType = "badge-nursery"; }
+            else if (numericScore >= 35) { evaluationAlphaGradeString = "P8 [Pass]"; cssStyleClassBadgeType = "badge-nursery"; }
+            else { evaluationAlphaGradeString = "F9 [Fail]"; cssStyleClassBadgeType = "badge-danger"; }
+
+            targetBadgeOutputDOM.innerText = evaluationAlphaGradeString;
+            targetBadgeOutputDOM.className = `badge ${cssStyleClassBadgeType}`;
+        }
+
+        // SYSTEM HARDWARE EVENT INITIALIZER ON CONTENT LOAD
+        window.addEventListener('DOMContentLoaded', () => {
+            injectMockCoreData();
+        });
+    </script>
+</body>
+</html>
